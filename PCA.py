@@ -9,7 +9,7 @@ import sqlite3
 
 def datacollect(order,n):
 
-    conn = sqlite3.connect('gofio/gofio/gofio3/webuidatabases/db_2019-09-03_offline.db')
+    conn = sqlite3.connect('Part1-reproducing_the_paper/gofio-master/gofio3/webuidatabases/db_2019-09-03_offline.db')
     cur = conn.cursor()
     cur.execute("SELECT * FROM spec1dfiles  WHERE spec_1d_type='ms1d' AND slitpos = 'A' ")
     
@@ -40,7 +40,7 @@ def datacollect(order,n):
     return spectrum
 
 
-def PCA(data):
+def PCA(data,a):
     length = 2048
     obsspect = data
     # median normalisation
@@ -63,30 +63,45 @@ def PCA(data):
         std = np.std(obsspect[i])
         obsspect[i] /= std
 
+    if(a==1):
+        F = np.ones((len(data),2048),dtype='float')
+        #covm = np.cov(np.transpose(obsspect))
+#
+#
+        #u, v  = np.linalg.eig(covm)
+        #v= np.real(v)
+        #u= np.real(u)
+    #
+        #for i in range(len(data)):
+        #    F[i] = v[:,i] 
+#
+        #obsspect =np.transpose(obsspect) 
+        #a = np.dot(F,obsspect)
+#
+        #G = np.zeros((len(data),length),dtype='float')
+        #for i in range(5):
+        #     G[i] = v[:,i]
+#
+        #spect  = np.dot(np.transpose(G),a)
+        #obsspect = np.transpose(obsspect)
+        #spect = np.transpose(spect)
+
+    else:
+        obsspect = np.transpose(obsspect)
+        U,S,VT = np.linalg.svd(obsspect)
     
-    F = np.ones((len(data),2048),dtype='float')
-    covm = np.cov(np.transpose(obsspect))
+        s=np.zeros((len(U),len(S)))
+
+        for i in range(5): 
+            S[i] = 0
+        for i in range(len(S)):    
+            s[i][i] = S[i]
 
 
-    u, v  = np.linalg.eig(covm)
-    v= np.real(v)
-    u= np.real(u)
+        spect = np.dot(U,np.dot(s,VT))    
    
-    for i in range(len(data)):
-        F[i] = v[:,i] 
 
-    obsspect =np.transpose(obsspect) 
-    a = np.dot(F,obsspect)
 
-    G = np.zeros((len(data),length),dtype='float')
-    for i in range(5):
-         G[i] = v[:,i]
-
-    spect  = np.dot(np.transpose(G),a)
-    obsspect = np.transpose(obsspect)
-    spect = np.transpose(spect)
-
-    
     newspect = np.transpose(spect-obsspect)
     vare =[]
     for i in range(len(newspect)):
@@ -105,7 +120,7 @@ wavelength = []
 for i in range(50):
     wavelength.append(datacollect(i,1)[0])
     data  = datacollect(i,2)
-    spectrum = PCA(data)
+    spectrum = PCA(data,0)
     allspectrum.append(spectrum)
     print(i)
 
