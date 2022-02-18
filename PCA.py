@@ -65,26 +65,26 @@ def PCA(data,a):
 
     if(a==1):
         F = np.ones((len(data),2048),dtype='float')
-        #covm = np.cov(np.transpose(obsspect))
-#
-#
-        #u, v  = np.linalg.eig(covm)
-        #v= np.real(v)
-        #u= np.real(u)
-    #
-        #for i in range(len(data)):
-        #    F[i] = v[:,i] 
-#
-        #obsspect =np.transpose(obsspect) 
-        #a = np.dot(F,obsspect)
-#
-        #G = np.zeros((len(data),length),dtype='float')
-        #for i in range(5):
-        #     G[i] = v[:,i]
-#
-        #spect  = np.dot(np.transpose(G),a)
-        #obsspect = np.transpose(obsspect)
-        #spect = np.transpose(spect)
+        covm = np.cov(np.transpose(obsspect))
+
+
+        u, v  = np.linalg.eig(covm)
+        v= np.real(v)
+        u= np.real(u)
+    
+        for i in range(len(data)):
+            F[i] = v[:,i] 
+
+        obsspect =np.transpose(obsspect) 
+        a = np.dot(F,obsspect)
+
+        G = np.zeros((len(data),length),dtype='float')
+        for i in range(5):
+             G[i] = v[:,i]
+
+        spect  = np.dot(np.transpose(G),a)
+        obsspect = np.transpose(obsspect)
+        spect = np.transpose(spect)
 
     else:
         obsspect = np.transpose(obsspect)
