@@ -8,8 +8,11 @@ plt.style.use(astropy_mpl_style)
 import sqlite3
 
 def datacollect(order,n):
+    try :
+        conn = sqlite3.connect('Part1-reproducing_the_paper/gofio-master/gofio3/webuidatabases/db_2019-09-03_offline.db')
+    except:
+        conn = sqlite3.connect('gofio/gofio/gofio3/webuidatabases/db_2018-07-07_offline.db')
 
-    conn = sqlite3.connect('Part1-reproducing_the_paper/gofio-master/gofio3/webuidatabases/db_2019-09-03_offline.db')
     cur = conn.cursor()
     cur.execute("SELECT * FROM spec1dfiles  WHERE spec_1d_type='ms1d' AND slitpos = 'A' ")
     
@@ -79,7 +82,7 @@ def PCA(data,a):
         a = np.dot(F,obsspect)
 
         G = np.zeros((len(data),length),dtype='float')
-        for i in range(5):
+        for i in range(20):
              G[i] = v[:,i]
 
         spect  = np.dot(np.transpose(G),a)
@@ -92,7 +95,7 @@ def PCA(data,a):
     
         s=np.zeros((len(U),len(S)))
 
-        for i in range(5): 
+        for i in range(20): 
             S[i] = 0
         for i in range(len(S)):    
             s[i][i] = S[i]
